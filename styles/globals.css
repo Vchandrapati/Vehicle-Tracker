@@ -2,11 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Define color variables */
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
+/* Dark mode variables */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -14,8 +16,117 @@
   }
 }
 
+/* Global body styles */
 body {
-  @apply text-[var(--foreground)] bg-[var(--background)] font-sans;
+  @apply font-sans;
   margin: 0;
   padding: 0;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* === Custom Utility Classes === */
+
+/* Containers */
+.app-container {
+  @apply min-h-screen bg-[var(--background)] text-[var(--foreground)];
+}
+
+/* Updated gradient: a more subtle, two-stop gradient */
+.page-container {
+  @apply min-h-screen p-4;
+  background: linear-gradient(to bottom right, #00d4ff, #a5b4fc);
+}
+
+.page-container-center {
+  @apply min-h-screen flex items-center justify-center p-4;
+  background: linear-gradient(to bottom right, #00d4ff, #a5b4fc);
+}
+
+/* Cards */
+.card {
+  @apply bg-white dark:bg-[#1f1f1f] rounded-lg shadow-lg p-8;
+}
+
+.card-sm {
+  @apply w-full max-w-sm;
+}
+
+.card-md {
+  @apply w-full max-w-md;
+}
+
+.card-2xl {
+  @apply w-full max-w-2xl;
+}
+
+.card-xl {
+  @apply max-w-6xl mx-auto;
+}
+
+/* Headings */
+.heading {
+  @apply text-gray-800 dark:text-gray-100;
+}
+
+.heading-lg {
+  @apply text-3xl font-bold;
+}
+
+.heading-xl {
+  @apply text-xl font-semibold;
+}
+
+/* Form Inputs */
+.form-input {
+  @apply border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:border-purple-500 text-gray-700 dark:text-gray-200 bg-transparent;
+}
+
+/* Buttons with updated subtle gradient */
+.btn {
+  @apply bg-gradient-to-r from-[#00d4ff] to-[#a5b4fc] text-white font-semibold py-2 rounded-md hover:opacity-90 transition;
+}
+
+.btn-gradient {
+  @apply bg-gradient-to-r from-[#00d4ff] to-[#a5b4fc] text-white font-semibold py-2 rounded-md hover:opacity-90 transition;
+}
+
+/* Popup */
+.popup-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+}
+
+.popup-content {
+  @apply bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 w-80;
+}
+
+/* Tables */
+.admin-table th {
+  @apply py-3 px-4 font-semibold;
+}
+.admin-table td {
+  @apply py-3 px-4;
+}
+.admin-table tr:hover {
+  @apply bg-gray-50 dark:hover:bg-gray-800;
+}
+
+.table-header {
+  @apply bg-gradient-to-r from-[#00d4ff] to-[#a5b4fc] text-white;
+}
+
+/* Log Cards */
+.log-card {
+  @apply border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800;
+}
+
+/* Chips and Tabs */
+/* Chips: white background with dark text */
+.chip {
+  @apply bg-white text-gray-800 px-3 py-1 rounded-full shadow;
+}
+
+/* Tabs: white background with dark text */
+.tab {
+  @apply bg-white text-gray-800 px-4 py-2 rounded-md shadow;
 }

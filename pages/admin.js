@@ -24,6 +24,7 @@ export default function AdminPage() {
   const [vehicles, setVehicles] = useState([]);
   const [logs, setLogs] = useState([]);
 
+  // Replace this with your secure admin password logic if needed.
   const adminPassword =
     process.env.NEXT_PUBLIC_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
 
@@ -54,8 +55,7 @@ export default function AdminPage() {
 
   function handleLogin(e) {
     e.preventDefault();
-    // For demonstration, you have "admin123" hard-coded.
-    // You might want to compare it to adminPassword in real usage.
+    // For demonstration, "admin123" is hard-coded.
     if (password === "admin123") {
       setLoggedIn(true);
     } else {
@@ -65,24 +65,19 @@ export default function AdminPage() {
 
   if (!loggedIn) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-c1 via-c3 to-c5 p-4">
-        <div className="bg-white dark:bg-[#1f1f1f] rounded-lg shadow-lg p-8 w-full max-w-sm">
-          <h1 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
-            Admin Login
-          </h1>
+      <div className="page-container-center">
+        <div className="card card-sm">
+          <h1 className="heading heading-lg mb-6">Admin Login</h1>
           <form onSubmit={handleLogin} className="flex flex-col space-y-4">
             <input
               type="password"
-              className="border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:border-c2 text-gray-700 dark:text-gray-200 bg-transparent"
+              className="form-input"
               placeholder="Enter admin password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <button
-              type="submit"
-              className="bg-gradient-to-r from-c1 to-c2 hover:from-c2 hover:to-c3 text-white font-semibold py-2 rounded-md"
-            >
+            <button type="submit" className="btn">
               Login
             </button>
           </form>
@@ -92,32 +87,28 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-c1 via-c3 to-c5 p-4">
-      <div className="bg-white dark:bg-[#1f1f1f] rounded-lg shadow-lg p-8 max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-gray-100">
-          Admin Dashboard
-        </h1>
+    <div className="page-container">
+      <div className="card card-xl">
+        <h1 className="heading heading-lg mb-8">Admin Dashboard</h1>
 
         {/* Vehicles Section */}
-        <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
-          Vehicles
-        </h2>
+        <h2 className="heading-xl mb-4">Vehicles</h2>
         <div className="overflow-x-auto mb-8">
-          <table className="min-w-full text-left border-collapse">
+          <table className="min-w-full text-left border-collapse admin-table">
             <thead>
-              <tr className="bg-gradient-to-r from-c1 to-c2 text-white">
-                <th className="py-3 px-4 font-semibold">ID</th>
-                <th className="py-3 px-4 font-semibold">Status</th>
-                <th className="py-3 px-4 font-semibold">Odometer</th>
-                <th className="py-3 px-4 font-semibold">Last Driver</th>
-                <th className="py-3 px-4 font-semibold">Last Activity</th>
+              <tr className="table-header">
+                <th>ID</th>
+                <th>Status</th>
+                <th>Odometer</th>
+                <th>Last Driver</th>
+                <th>Last Activity</th>
               </tr>
             </thead>
             <tbody>
               {vehicles.map((v) => (
                 <tr
                   key={v.id}
-                  className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  className="border-b border-gray-200 hover:bg-gray-50"
                 >
                   <td className="py-3 px-4">{v.id}</td>
                   <td className="py-3 px-4">
@@ -135,28 +126,23 @@ export default function AdminPage() {
         </div>
 
         {/* Logs Section */}
-        <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
-          Logs
-        </h2>
+        <h2 className="heading-xl mb-4">Logs</h2>
         <div className="grid gap-4 md:grid-cols-2">
           {logs.map((log) => (
-            <div
-              key={log.id}
-              className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800"
-            >
-              <p className="mb-1 text-gray-700 dark:text-gray-200">
+            <div key={log.id} className="log-card">
+              <p className="mb-1">
                 <strong>Vehicle:</strong> {log.vehicle_id}
               </p>
-              <p className="mb-1 text-gray-700 dark:text-gray-200">
+              <p className="mb-1">
                 <strong>Event:</strong> {log.event_type}
               </p>
-              <p className="mb-1 text-gray-700 dark:text-gray-200">
+              <p className="mb-1">
                 <strong>Driver:</strong> {log.driver}
               </p>
-              <p className="mb-1 text-gray-700 dark:text-gray-200">
+              <p className="mb-1">
                 <strong>Odometer:</strong> {log.odometer}
               </p>
-              <p className="text-gray-700 dark:text-gray-200">
+              <p>
                 <strong>Time:</strong> {formatDateTime(log.created_at)}
               </p>
             </div>

@@ -7,22 +7,37 @@ export default function VehiclePage() {
   const router = useRouter();
   const { vehicleId } = router.query;
 
+  // PIN authentication states
+  const [pin, setPin] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  // Vehicle and form states
   const [vehicle, setVehicle] = useState(null);
   const [driver, setDriver] = useState("");
   const [odometer, setOdometer] = useState("");
-  
-  // Remove the old `message` state and use these states for the popup
+  const [loading, setLoading] = useState(false);
+
+  // Popup states
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
   const [popupType, setPopupType] = useState("success"); // "success" or "error"
 
-  const [loading, setLoading] = useState(false);
-
+  // Fetch vehicle data when logged in and when vehicleId is available
   useEffect(() => {
-    if (vehicleId) {
+    if (loggedIn && vehicleId) {
       fetchVehicle(vehicleId);
     }
-  }, [vehicleId]);
+  }, [loggedIn, vehicleId]);
+
+  // PIN handler (for demonstration, the PIN is "1234")
+  function handlePinSubmit(e) {
+    e.preventDefault();
+    if (pin === "1289") {
+      setLoggedIn(true);
+    } else {
+      alert("Incorrect PIN");
+    }
+  }
 
   async function fetchVehicle(id) {
     const { data, error } = await supabase
@@ -45,17 +60,17 @@ export default function VehiclePage() {
     setLoading(true);
 
     try {
-      // If vehicle is in use by a different driver, check them in first
+      // If vehicle is in use by a different driver, check them in first.
       if (vehicle?.in_use && vehicle?.current_driver !== driver) {
         await checkIn(vehicleId, vehicle.current_driver, vehicle.current_odometer);
       }
 
-      // If vehicle is free or just checked in, do a checkout
+      // If vehicle is free or was just checked in, perform a checkout.
       if (!vehicle?.in_use || vehicle?.current_driver !== driver) {
         await checkOut(vehicleId, driver, Number(odometer));
         showPopupMessage(`Vehicle ${vehicleId} checked out to ${driver}.`, "success");
       } else {
-        // Same driver tries again => check in
+        // If the same driver submits again, check in.
         await checkIn(vehicleId, driver, Number(odometer));
         showPopupMessage(`Vehicle ${vehicleId} checked in by ${driver}.`, "success");
       }
@@ -124,49 +139,69 @@ export default function VehiclePage() {
     }
   }
 
-  // Helper function to show the popup
+  // Helper functions for the popup
   function showPopupMessage(message, type = "success") {
     setPopupMessage(message);
     setPopupType(type);
     setShowPopup(true);
   }
 
-  // Close popup
   function closePopup() {
     setShowPopup(false);
     setPopupMessage("");
   }
 
+  // If not logged in, show the PIN code page.
+  if (!loggedIn) {
+    return (
+      <div className="page-container-center">
+        <div className="card card-sm">
+          <h1 className="heading heading-lg mb-6">Enter PIN</h1>
+          <form onSubmit={handlePinSubmit} className="flex flex-col space-y-4">
+            <input
+              type="password"
+              className="form-input"
+              placeholder="Enter PIN"
+              value={pin}
+              onChange={(e) => setPin(e.target.value)}
+              required
+            />
+            <button type="submit" className="btn">
+              Enter
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-c1 via-c3 to-c5 p-4 flex items-center justify-center">
+    <div className="page-container flex items-center justify-center">
       {/* Popup Overlay */}
       {showPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 w-80">
+        <div className="popup-overlay">
+          <div className="popup-content">
             <h2
-              className={`text-xl font-bold mb-4 ${
+              className={`heading-lg mb-4 ${
                 popupType === "success" ? "text-green-500" : "text-red-500"
               }`}
             >
               {popupType === "success" ? "Success" : "Error"}
             </h2>
             <p className="text-gray-700 dark:text-gray-200">{popupMessage}</p>
-            <button
-              onClick={closePopup}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-            >
+            <button onClick={closePopup} className="btn mt-4">
               Close
             </button>
           </div>
         </div>
       )}
 
-      <div className="bg-white dark:bg-[#1f1f1f] rounded-lg shadow-lg p-8 max-w-2xl w-full">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+      <div className="card card-xl">
+        <h1 className="heading heading-lg mb-6">
           Vehicle: {vehicleId || "Loading..."}
         </h1>
 
-        {/* Vehicle Info */}
+        {/* Vehicle Information */}
         {vehicle ? (
           <div className="mb-6">
             <p className="mb-2 text-gray-700 dark:text-gray-200">
@@ -186,14 +221,14 @@ export default function VehiclePage() {
         )}
 
         {/* Action Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4 max-w-sm">
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
           <div>
             <label className="block font-semibold mb-1 text-gray-700 dark:text-gray-200">
               Your Name:
             </label>
             <input
               type="text"
-              className="border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 w-full focus:outline-none focus:border-c2 text-gray-700 dark:text-gray-200 bg-transparent"
+              className="form-input w-full"
               value={driver}
               onChange={(e) => setDriver(e.target.value)}
               required
@@ -205,17 +240,13 @@ export default function VehiclePage() {
             </label>
             <input
               type="number"
-              className="border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 w-full focus:outline-none focus:border-c2 text-gray-700 dark:text-gray-200 bg-transparent"
+              className="form-input w-full"
               value={odometer}
               onChange={(e) => setOdometer(e.target.value)}
               required
             />
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-gradient-to-r from-c1 via-c3 to-c5 text-white font-semibold py-2 rounded-md hover:opacity-90 transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          <button type="submit" disabled={loading} className="btn">
             {vehicle?.in_use && vehicle?.current_driver === driver
               ? "Check In"
               : "Check Out / Take Over"}
