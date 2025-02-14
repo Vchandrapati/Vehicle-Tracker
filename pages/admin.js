@@ -98,6 +98,7 @@ export default function AdminPage() {
             <thead>
               <tr className="table-header">
                 <th>ID</th>
+                <th>Plate Number</th>
                 <th>Status</th>
                 <th>Odometer</th>
                 <th>Last Driver</th>
@@ -111,6 +112,7 @@ export default function AdminPage() {
                   className="border-b border-gray-200 hover:bg-gray-50"
                 >
                   <td className="py-3 px-4">{v.id}</td>
+                  <td className="py-3 px-4">{v.plate_number || "N/A"}</td>
                   <td className="py-3 px-4">
                     {v.in_use
                       ? `In use by ${v.current_driver || "Unknown"}`
