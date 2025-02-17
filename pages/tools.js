@@ -63,7 +63,7 @@ export default function ToolPage() {
   // PIN handler (for demonstration, the PIN is "4321")
   function handlePinSubmit(e) {
     e.preventDefault();
-    if (pin === "4321") {
+    if (pin === "1289") {
       setLoggedIn(true);
     } else {
       alert("Incorrect PIN");
