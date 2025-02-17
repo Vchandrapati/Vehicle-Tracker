@@ -295,7 +295,7 @@ export default function ToolPage() {
               type="text"
               className="form-input w-full"
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              readOnly
               required
             />
           </div>
