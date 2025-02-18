@@ -18,6 +18,16 @@ function formatDateTime(timestamp) {
   );
 }
 
+// Helper function to calculate days remaining until expiration
+function daysRemaining(expirationDate) {
+  if (!expirationDate) return "N/A";
+  const now = new Date();
+  const expDate = new Date(expirationDate);
+  const diff = expDate - now;
+  const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+  return days;
+}
+
 export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
@@ -73,7 +83,6 @@ export default function AdminPage() {
   }
 
   async function fetchLogs() {
-    // Logs remain ordered by created_at (latest first)
     const { data, error } = await supabase
       .from("logs")
       .select("*")
@@ -82,7 +91,6 @@ export default function AdminPage() {
   }
 
   async function fetchTools() {
-    // Order tools alphabetically by id
     const { data, error } = await supabase
       .from("tools")
       .select("*")
@@ -164,21 +172,41 @@ export default function AdminPage() {
                     <th>Odometer</th>
                     <th>Last Driver</th>
                     <th>Last Activity</th>
+                    <th>Days Remaining</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {vehicles.map((v) => (
-                    <tr key={v.id} className="border-b border-gray-200 hover:bg-gray-50">
-                      <td className="py-3 px-4">{v.id}</td>
-                      <td className="py-3 px-4">{v.plate_number || "N/A"}</td>
-                      <td className="py-3 px-4">
-                        {v.in_use ? `In use by ${v.current_driver || "Unknown"}` : "Free"}
-                      </td>
-                      <td className="py-3 px-4">{v.current_odometer}</td>
-                      <td className="py-3 px-4">{v.last_driver || "N/A"}</td>
-                      <td className="py-3 px-4">{formatDateTime(v.last_activity)}</td>
-                    </tr>
-                  ))}
+                  {vehicles.map((v) => {
+                    const days = daysRemaining(v.registration_expiration);
+                    return (
+                      <tr
+                        key={v.id}
+                        className="border-b border-gray-200 hover:bg-gray-50"
+                      >
+                        <td className="py-3 px-4">{v.id}</td>
+                        <td className="py-3 px-4">{v.plate_number || "N/A"}</td>
+                        <td className="py-3 px-4">
+                          {v.in_use
+                            ? `In use by ${v.current_driver || "Unknown"}`
+                            : "Free"}
+                        </td>
+                        <td className="py-3 px-4">{v.current_odometer}</td>
+                        <td className="py-3 px-4">{v.last_driver || "N/A"}</td>
+                        <td className="py-3 px-4">
+                          {formatDateTime(v.last_activity)}
+                        </td>
+                        <td
+                          className={`py-3 px-4 ${
+                            typeof days === "number" && days <= 21
+                              ? "text-red-500"
+                              : "text-gray-700"
+                          }`}
+                        >
+                          {days}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -228,14 +256,25 @@ export default function AdminPage() {
                 </thead>
                 <tbody>
                   {tools.map((t) => (
-                    <tr key={t.id} className="border-b border-gray-200 hover:bg-gray-50">
+                    <tr
+                      key={t.id}
+                      className="border-b border-gray-200 hover:bg-gray-50"
+                    >
                       <td className="py-3 px-4">{t.id}</td>
                       <td className="py-3 px-4">{t.name}</td>
-                      <td className="py-3 px-4">{t.in_use ? "In use" : "Available"}</td>
-                      <td className="py-3 px-4">{t.current_user_name || "N/A"}</td>
+                      <td className="py-3 px-4">
+                        {t.in_use ? "In use" : "Available"}
+                      </td>
+                      <td className="py-3 px-4">
+                        {t.current_user_name || "N/A"}
+                      </td>
                       <td className="py-3 px-4">{t.checked_out_by || "N/A"}</td>
-                      <td className="py-3 px-4">{t.current_location || "N/A"}</td>
-                      <td className="py-3 px-4">{formatDateTime(t.last_activity)}</td>
+                      <td className="py-3 px-4">
+                        {t.current_location || "N/A"}
+                      </td>
+                      <td className="py-3 px-4">
+                        {formatDateTime(t.last_activity)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
