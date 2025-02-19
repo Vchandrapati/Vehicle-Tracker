@@ -33,6 +33,10 @@ export default function AdminPage() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [selectedTab, setSelectedTab] = useState("vehicles");
 
+  // Sorting state for vehicles and tools
+  const [vehicleSort, setVehicleSort] = useState("name"); // "name" or "status"
+  const [toolSort, setToolSort] = useState("name"); // "name" or "status"
+
   // Vehicles state
   const [vehicles, setVehicles] = useState([]);
   const [logs, setLogs] = useState([]);
@@ -51,6 +55,63 @@ export default function AdminPage() {
     }
   }
 
+  // Fetch vehicles using the current sort option
+  async function fetchVehicles() {
+    let orderField, ascending;
+    if (vehicleSort === "name") {
+      orderField = "plate_number";
+      ascending = true;
+    } else if (vehicleSort === "status") {
+      orderField = "in_use";
+      ascending = false; // in use (true) will come first
+    } else {
+      orderField = "id";
+      ascending = true;
+    }
+    const { data, error } = await supabase
+      .from("vehicles")
+      .select("*")
+      .order(orderField, { ascending });
+    if (!error) setVehicles(data);
+  }
+
+  async function fetchLogs() {
+    const { data, error } = await supabase
+      .from("logs")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (!error) setLogs(data);
+  }
+
+  // Fetch tools using the current sort option (tool id removed from display)
+  async function fetchTools() {
+    let orderField, ascending;
+    if (toolSort === "name") {
+      orderField = "name";
+      ascending = true;
+    } else if (toolSort === "status") {
+      orderField = "in_use";
+      ascending = false; // in use (true) comes first
+    } else {
+      orderField = "id";
+      ascending = true;
+    }
+    const { data, error } = await supabase
+      .from("tools")
+      .select("*")
+      .order(orderField, { ascending });
+    if (!error) setTools(data);
+  }
+
+  async function fetchToolLogs() {
+    const { data, error } = await supabase
+      .from("tool_logs")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (!error) setToolLogs(data);
+  }
+
+  // Main interval useEffect that refetches data every 10 seconds when logged in
   useEffect(() => {
     if (loggedIn) {
       let interval;
@@ -73,38 +134,19 @@ export default function AdminPage() {
     }
   }, [loggedIn, selectedTab]);
 
-  async function fetchVehicles() {
-    // Order vehicles alphabetically by id
-    const { data, error } = await supabase
-      .from("vehicles")
-      .select("*")
-      .order("id", { ascending: true });
-    if (!error) setVehicles(data);
-  }
+  // Re-fetch vehicles when the sort option changes
+  useEffect(() => {
+    if (loggedIn && selectedTab === "vehicles") {
+      fetchVehicles();
+    }
+  }, [vehicleSort, loggedIn, selectedTab]);
 
-  async function fetchLogs() {
-    const { data, error } = await supabase
-      .from("logs")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (!error) setLogs(data);
-  }
-
-  async function fetchTools() {
-    const { data, error } = await supabase
-      .from("tools")
-      .select("*")
-      .order("id", { ascending: true });
-    if (!error) setTools(data);
-  }
-
-  async function fetchToolLogs() {
-    const { data, error } = await supabase
-      .from("tool_logs")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (!error) setToolLogs(data);
-  }
+  // Re-fetch tools when the sort option changes
+  useEffect(() => {
+    if (loggedIn && selectedTab === "tools") {
+      fetchTools();
+    }
+  }, [toolSort, loggedIn, selectedTab]);
 
   if (!loggedIn) {
     return (
@@ -160,6 +202,21 @@ export default function AdminPage() {
 
         {selectedTab === "vehicles" && (
           <>
+            {/* Sorting Controls for Vehicles */}
+            <div className="mb-4 flex items-center">
+              <label className="mr-2 font-medium text-gray-700 dark:text-gray-200">
+                Sort by:
+              </label>
+              <select
+                value={vehicleSort}
+                onChange={(e) => setVehicleSort(e.target.value)}
+                className="form-select block w-auto px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800"
+              >
+                <option value="name">Name (Plate Number)</option>
+                <option value="status">Status</option>
+              </select>
+            </div>
+
             {/* Vehicles Section */}
             <h2 className="heading-xl mb-4">Vehicles</h2>
             <div className="overflow-x-auto mb-8">
@@ -239,13 +296,27 @@ export default function AdminPage() {
 
         {selectedTab === "tools" && (
           <>
+            {/* Sorting Controls for Tools */}
+            <div className="mb-4 flex items-center">
+              <label className="mr-2 font-medium text-gray-700 dark:text-gray-200">
+                Sort by:
+              </label>
+              <select
+                value={toolSort}
+                onChange={(e) => setToolSort(e.target.value)}
+                className="form-select block w-auto px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800"
+              >
+                <option value="name">Name</option>
+                <option value="status">Status</option>
+              </select>
+            </div>
+
             {/* Tools Section */}
             <h2 className="heading-xl mb-4">Tools</h2>
             <div className="overflow-x-auto mb-8">
               <table className="min-w-full text-left border-collapse admin-table">
                 <thead>
                   <tr className="table-header">
-                    <th>ID</th>
                     <th>Name</th>
                     <th>Status</th>
                     <th>Current User (Contractor)</th>
@@ -260,7 +331,6 @@ export default function AdminPage() {
                       key={t.id}
                       className="border-b border-gray-200 hover:bg-gray-50"
                     >
-                      <td className="py-3 px-4">{t.id}</td>
                       <td className="py-3 px-4">{t.name}</td>
                       <td className="py-3 px-4">
                         {t.in_use ? "In use" : "Available"}
