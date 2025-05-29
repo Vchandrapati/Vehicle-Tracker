@@ -158,25 +158,21 @@ function StatsOverview({ vehicles, tools }) {
     {
       title: "Total Vehicles",
       value: vehicleStats.total,
-      subtitle: `${vehicleStats.available} available`,
       color: "blue"
     },
     {
       title: "Vehicles In Use",
       value: vehicleStats.inUse,
-      subtitle: `${((vehicleStats.inUse / vehicleStats.total) * 100).toFixed(0)}% utilization`,
       color: "orange"
     },
     {
-      title: "Total Tools",
-      value: toolStats.total,
-      subtitle: `${toolStats.available} available`,
-      color: "green"
+      title: "Tool In Use",
+      value: `${toolStats.inUse} / ${toolStats.total}`,
+      color: "blue"
     },
     {
-      title: "Expiring Soon",
+      title: "Registrations Expiring Soon",
       value: vehicleStats.expiringSoon,
-      subtitle: "registrations",
       color: vehicleStats.expiringSoon > 0 ? "red" : "gray"
     }
   ];
