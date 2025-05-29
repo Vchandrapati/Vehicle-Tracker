@@ -112,9 +112,9 @@ function LoginForm({ onLogin }) {
 
 function TabNavigation({ selectedTab, onTabChange }) {
   const tabs = [
-    { id: "overview", label: "Overview", icon: "📊" },
-    { id: "vehicles", label: "Vehicles", icon: "🚗" },
-    { id: "tools", label: "Tools", icon: "🔧" }
+    { id: "overview", label: "Overview", },
+    { id: "vehicles", label: "Vehicles", },
+    { id: "tools", label: "Tools", }
   ];
 
   return (
