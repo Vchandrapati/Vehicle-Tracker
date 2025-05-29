@@ -10,10 +10,8 @@ export default function HomePage() {
         <p className="text-gray-700 dark:text-gray-200 mb-6">
           Scan an NFC tag to go directly to a vehicle page.
         </p>
-        <Link href="/admin">
-          <a className="btn-gradient inline-block px-6 py-3 font-bold text-white">
+        <Link href="/admin" className="btn-gradient inline-block px-6 py-3 font-bold text-white">
             Admin Dashboard
-          </a>
         </Link>
       </div>
     </div>

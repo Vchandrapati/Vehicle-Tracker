@@ -2,50 +2,113 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Define color variables */
+/* Define color variables - Professional Blue Palette */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1e293b;
+  --primary-blue: #0ea5e9;
+  --secondary-blue: #0284c7; 
+  --accent-blue: #38bdf8;
+  --light-blue: #e0f2fe;
+  --dark-blue: #075985;
+  --surface: #f8fafc;
+  --surface-hover: #f1f5f9;
+  --border: #e2e8f0;
+  --text-muted: #64748b;
 }
 
 /* Dark mode variables */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0f172a;
+    --foreground: #f1f5f9;
+    --surface: #1e293b;
+    --surface-hover: #334155;
+    --border: #334155;
+    --text-muted: #94a3b8;
+    --light-blue: #1e293b;
   }
 }
 
 /* Global body styles */
 body {
-  @apply font-sans;
+  @apply font-sans antialiased;
   margin: 0;
   padding: 0;
   background-color: var(--background);
   color: var(--foreground);
+  letter-spacing: -0.025em;
 }
 
 /* === Custom Utility Classes === */
 
 /* Containers */
 .app-container {
-  @apply min-h-screen bg-[var(--background)] text-[var(--foreground)];
+  @apply min-h-screen;
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
-/* Updated gradient: a more subtle, two-stop gradient */
+/* Professional gradient background */
 .page-container {
-  @apply min-h-screen p-4;
-  background: linear-gradient(to bottom right, #00d4ff, #a5b4fc);
+  @apply min-h-screen p-6;
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 50%, var(--dark-blue) 100%);
+  position: relative;
+}
+
+.page-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(56, 189, 248, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.page-container > * {
+  position: relative;
+  z-index: 1;
 }
 
 .page-container-center {
-  @apply min-h-screen flex items-center justify-center p-4;
-  background: linear-gradient(to bottom right, #00d4ff, #a5b4fc);
+  @apply min-h-screen flex items-center justify-center p-6;
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 50%, var(--dark-blue) 100%);
+  position: relative;
 }
 
-/* Cards */
+.page-container-center::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(56, 189, 248, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(14, 165, 233, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.page-container-center > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Professional Cards */
 .card {
-  @apply bg-white dark:bg-[#1f1f1f] rounded-lg shadow-lg p-8;
+  @apply rounded-xl shadow-lg border backdrop-blur-sm;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-color: var(--border);
+  padding: 2rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .card {
+    background-color: rgba(30, 41, 59, 0.95);
+    border-color: var(--border);
+  }
 }
 
 .card-sm {
@@ -56,77 +119,335 @@ body {
   @apply w-full max-w-md;
 }
 
-.card-2xl {
-  @apply w-full max-w-2xl;
+.card-lg {
+  @apply w-full max-w-lg;
 }
 
 .card-xl {
-  @apply max-w-6xl mx-auto;
+  @apply w-full max-w-4xl;
 }
 
-/* Headings */
+.card-2xl {
+  @apply w-full max-w-6xl mx-auto;
+}
+
+/* Professional Headings */
 .heading {
-  @apply text-gray-800 dark:text-gray-100;
+  color: var(--foreground);
+  font-weight: 600;
+  letter-spacing: -0.025em;
 }
 
-.heading-lg {
-  @apply text-3xl font-bold;
+.heading-sm {
+  @apply text-lg font-semibold;
 }
 
-.heading-xl {
+.heading-md {
   @apply text-xl font-semibold;
 }
 
-/* Form Inputs */
+.heading-lg {
+  @apply text-2xl font-bold;
+}
+
+.heading-xl {
+  @apply text-3xl font-bold;
+}
+
+.heading-2xl {
+  @apply text-4xl font-bold;
+}
+
+/* Professional Form Inputs */
 .form-input {
-  @apply border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:border-purple-500 text-gray-700 dark:text-gray-200 bg-transparent;
+  @apply rounded-lg px-4 py-3 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+  border: 1px solid var(--border);
+  background-color: var(--background);
+  color: var(--foreground);
+  font-size: 0.95rem;
 }
 
-/* Buttons with updated subtle gradient */
+.form-input:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.form-label {
+  @apply block text-sm font-medium mb-2;
+  color: var(--foreground);
+}
+
+/* Professional Buttons */
 .btn {
-  @apply bg-gradient-to-r from-[#00d4ff] to-[#a5b4fc] text-white font-semibold py-2 rounded-md hover:opacity-90 transition;
+  @apply inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  letter-spacing: -0.025em;
 }
 
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+  color: white;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.35);
+}
+
+.btn-primary:focus {
+  ring-color: var(--primary-blue);
+}
+
+.btn-secondary {
+  background-color: var(--surface);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background-color: var(--surface-hover);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--primary-blue);
+  border: 2px solid var(--primary-blue);
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+}
+
+/* Legacy gradient button for compatibility */
 .btn-gradient {
-  @apply bg-gradient-to-r from-[#00d4ff] to-[#a5b4fc] text-white font-semibold py-2 rounded-md hover:opacity-90 transition;
+  @apply btn btn-primary;
 }
 
-/* Popup */
+/* Professional Popup */
 .popup-overlay {
-  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+  @apply fixed inset-0 flex items-center justify-center z-50;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
 }
 
 .popup-content {
-  @apply bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 w-80;
+  @apply rounded-xl shadow-2xl border max-w-md w-full mx-4;
+  background-color: var(--background);
+  border-color: var(--border);
+  padding: 2rem;
+  animation: slideIn 0.2s ease-out;
 }
 
-/* Tables */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Professional Tables */
+.admin-table {
+  @apply w-full rounded-lg overflow-hidden shadow-sm;
+  border: 1px solid var(--border);
+  background-color: var(--background);
+}
+
 .admin-table th {
-  @apply py-3 px-4 font-semibold;
+  @apply py-4 px-6 text-left font-semibold text-sm tracking-wide;
+  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+  color: white;
 }
+
 .admin-table td {
-  @apply py-3 px-4;
+  @apply py-4 px-6 text-sm;
+  color: var(--foreground);
+  border-bottom: 1px solid var(--border);
 }
+
+.admin-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
 .admin-table tr:hover {
-  @apply bg-gray-50 dark:hover:bg-gray-800;
+  background-color: var(--surface-hover);
 }
 
 .table-header {
-  @apply bg-gradient-to-r from-[#00d4ff] to-[#a5b4fc] text-white;
+  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+  color: white;
 }
 
-/* Log Cards */
+/* Professional Status Badges */
+.status-badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+}
+
+.status-badge-checked-in {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.status-badge-checked-out {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+@media (prefers-color-scheme: dark) {
+  .status-badge-checked-in {
+    background-color: rgba(34, 197, 94, 0.2);
+    color: #86efac;
+  }
+  
+  .status-badge-checked-out {
+    background-color: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+  }
+}
+
+/* Professional Log Cards */
 .log-card {
-  @apply border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800;
+  @apply rounded-lg p-6 border transition-all duration-200;
+  background-color: var(--surface);
+  border-color: var(--border);
 }
 
-/* Chips and Tabs */
-/* Chips: white background with dark text */
+.log-card:hover {
+  background-color: var(--surface-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Professional Chips and Tabs */
 .chip {
-  @apply bg-white text-gray-800 px-3 py-1 rounded-full shadow;
+  @apply inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-200;
+  background-color: var(--light-blue);
+  color: var(--dark-blue);
+  border: 1px solid rgba(14, 165, 233, 0.2);
 }
 
-/* Tabs: white background with dark text */
+.chip:hover {
+  background-color: var(--primary-blue);
+  color: white;
+  transform: translateY(-1px);
+}
+
 .tab {
-  @apply bg-white text-gray-800 px-4 py-2 rounded-md shadow;
+  @apply inline-flex items-center px-6 py-3 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer;
+  background-color: var(--surface);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.tab:hover {
+  background-color: var(--surface-hover);
+  color: var(--foreground);
+}
+
+.tab.active {
+  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+  color: white;
+  border-color: var(--primary-blue);
+}
+
+/* Professional Dashboard Stats */
+.stat-card {
+  @apply rounded-xl p-6 border;
+  background-color: var(--surface);
+  border-color: var(--border);
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+  @apply text-3xl font-bold;
+  color: var(--primary-blue);
+}
+
+.stat-label {
+  @apply text-sm font-medium;
+  color: var(--text-muted);
+}
+
+/* Professional Loading States */
+.loading-spinner {
+  @apply inline-block w-6 h-6 border-2 border-solid rounded-full animate-spin;
+  border-color: var(--primary-blue) transparent var(--primary-blue) transparent;
+}
+
+/* Professional Success/Error Messages */
+.alert {
+  @apply rounded-lg p-4 border-l-4;
+}
+
+.alert-success {
+  background-color: #f0fdf4;
+  border-color: #22c55e;
+  color: #166534;
+}
+
+.alert-error {
+  background-color: #fef2f2;
+  border-color: #ef4444;
+  color: #991b1b;
+}
+
+.alert-info {
+  background-color: var(--light-blue);
+  border-color: var(--primary-blue);
+  color: var(--dark-blue);
+}
+
+@media (prefers-color-scheme: dark) {
+  .alert-success {
+    background-color: rgba(34, 197, 94, 0.1);
+    color: #86efac;
+  }
+  
+  .alert-error {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #fca5a5;
+  }
+  
+  .alert-info {
+    background-color: rgba(14, 165, 233, 0.1);
+    color: #7dd3fc;
+  }
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .page-container,
+  .page-container-center {
+    @apply p-4;
+  }
+  
+  .card {
+    padding: 1.5rem;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    @apply py-3 px-4 text-sm;
+  }
 }
